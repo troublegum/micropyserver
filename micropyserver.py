@@ -28,6 +28,7 @@ THE SOFTWARE.
 import re
 import socket
 import sys
+import io
 
 
 class MicroPyServer(object):
@@ -62,10 +63,7 @@ class MicroPyServer(object):
                 else:
                     self.not_found()
             except Exception as e:
-                try:
-                    self.internal_error(str(e))
-                except Exception as e:
-                    sys.print_exception(e)
+                    self.internal_error(e)
             finally:
                 self._connect.close()
 
@@ -110,8 +108,11 @@ class MicroPyServer(object):
 
     def internal_error(self, error):
         """ Catch error action """
-        self.send("Error: " + error, status=500)
-        sys.exc_info()
+        output = io.StringIO()
+        sys.print_exception(error, output)
+        str_error = output.getvalue()
+        output.close()
+        self.send("Error: " + str_error, status=500)
 
     def on_request(self, handler):
         """ Set request handler """
@@ -120,3 +121,4 @@ class MicroPyServer(object):
     def _get_request(self):
         """ Return request body """
         return str(self._connect.recv(4096), "utf8")
+

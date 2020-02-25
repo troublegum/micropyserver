@@ -64,6 +64,45 @@ server.add_route("/", return_json)
 server.start()
 ```
 
+### Turn ON / OFF a led example
+
+You can remote control a led via internet.
+
+![schema](https://habrastorage.org/webt/jb/xu/aj/jbxuaj0nr8fnqllbq27p_vfx3bw.png)
+
+```
+import esp
+import network
+from micropyserver import MicroPyServer
+
+wlan_id = "your wi-fi"
+wlan_pass = "your password"
+
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+if not wlan.isconnected():
+    wlan.connect(wlan_id, wlan_pass)
+    
+def do_on(request):
+    ''' on request handler '''
+    pin.value(1)
+    server.send("ON")
+
+def do_off(request):
+    ''' off request handler '''
+    pin.value(0)
+    server.send("OFF")
+
+pin = machine.Pin(13, machine.Pin.OUT)
+server = MicroPyServer()
+''' add request handlers '''
+server.add_route("/on", do_on)
+server.add_route("/off", do_off)
+''' start server '''
+server.start()    
+```    
+    
+
 ### More examples
 
 More examples you can find in a folder "examples".

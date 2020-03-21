@@ -70,7 +70,20 @@ class MicroPyServer(object):
     def add_route(self, path, handler, method="GET"):
         """ Add new route  """
         self._routes.append({"path": path, "handler": handler, "method": method})
-
+    
+    def route(self, path, method="GET"):
+        """
+        A decorator providing an easy way to add a new route.
+        Example:
+            @server.route('/index')
+            def index(request):
+                server.send("HELLO WORLD!")
+        """
+        def decorator(f):
+            self.add_route(path, f, method)
+            return f
+        return decorator
+    
     def send(self, response, status=200, content_type="Content-Type: text/plain", extra_headers=[]):
         """ Send response to client """
         if self._connect is None:

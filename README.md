@@ -1,6 +1,6 @@
 # MicroPyServer
 
-MicroPyServer is a simple HTTP server for MicroPython projects.
+[MicroPyServer](https://github.com/troublegum/micropyserver) is a simple HTTP server for MicroPython projects.
 
 ## Install
 

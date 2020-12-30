@@ -33,14 +33,14 @@ def show_index(request):
     ''' main request handler '''
     server.send("THIS IS INDEX PAGE!")
     
-def show_info(request, address):
-    ''' info request handler '''
-    server.send("Your IP:" + str(address))
+def another_action(request):
+    ''' another action handler '''
+    server.send("THIS IS ANOTHER ACTION!")
 
 server = MicroPyServer()
 ''' add request handlers '''
 server.add_route("/", show_index)
-server.add_route("/info", show_info)
+server.add_route("/another_action", another_action)
 ''' start server '''
 server.start()
 ```

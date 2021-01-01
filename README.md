@@ -19,7 +19,7 @@ def show_message(request):
     server.send("HELLO WORLD!")
 
 server = MicroPyServer()
-''' add request handler '''
+''' add route '''
 server.add_route("/", show_message)
 ''' start server '''
 server.start()
@@ -38,7 +38,7 @@ def another_action(request):
     server.send("THIS IS ANOTHER ACTION!")
 
 server = MicroPyServer()
-''' add request handlers '''
+''' add routes '''
 server.add_route("/", show_index)
 server.add_route("/another_action", another_action)
 ''' start server '''
@@ -58,11 +58,35 @@ def return_json(request):
     server.send(json_str, content_type="Content-Type: application/json")
 
 server = MicroPyServer()
-''' add request handler '''
+''' add route '''
 server.add_route("/", return_json)
 ''' start server '''
 server.start()
 ```
+
+### Access denied example
+```
+from micropyserver import MicroPyServer
+
+def show_index(request):
+    ''' main request handler '''
+    server.send("THIS IS INDEX PAGE!")
+    
+def on_request_handler(request, address):
+    if str(address[0]) != '127.0.0.1':
+        server.send('ACCESS DENIED!', 403)
+        return False        
+    return True
+
+
+server = MicroPyServer()
+''' add route '''
+server.add_route("/", show_index)
+''' add request handler '''
+server.on_request(on_request_handler)
+''' start server '''
+server.start()
+``` 
 
 ### Turn ON / OFF a led example
 
@@ -95,13 +119,13 @@ def do_off(request):
 
 pin = machine.Pin(13, machine.Pin.OUT)
 server = MicroPyServer()
-''' add request handlers '''
+''' add routes '''
 server.add_route("/on", do_on)
 server.add_route("/off", do_off)
 ''' start server '''
 server.start()    
 ```    
-    
+  
 
 ### More examples
 

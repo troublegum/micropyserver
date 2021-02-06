@@ -40,6 +40,8 @@ class MicroPyServer(object):
         self._routes = []
         self._connect = None
         self._on_request_handler = None
+        self._on_not_found_handler = None
+        self._on_error_handler = None
 
     def start(self):
         """ Start server """
@@ -50,7 +52,7 @@ class MicroPyServer(object):
         while True:
             try:
                 self._connect, address = sock.accept()
-                request = self._get_request()
+                request = self.get_request()
                 if len(request) == 0:
                     self._connect.close()
                     continue
@@ -61,30 +63,22 @@ class MicroPyServer(object):
                 if route:
                     route["handler"](request)
                 else:
-                    self.not_found()
+                    self._route_not_found(request)
             except Exception as e:
-                    self.internal_error(e)
+                self._internal_error(e)
             finally:
                 self._connect.close()
 
     def add_route(self, path, handler, method="GET"):
         """ Add new route  """
-        self._routes.append({"path": path, "handler": handler, "method": method})
+        self._routes.append(
+            {"path": path, "handler": handler, "method": method})
 
-    def send(self, response, status=200, content_type="Content-Type: text/plain", extra_headers=[]):
-        """ Send response to client """
+    def send(self, data):
+        """ Send data to client """
         if self._connect is None:
             raise Exception("Can't send response, no connection instance")
-
-        status_message = {200: "OK", 400: "Bad Request", 403: "Forbidden", 404: "Not Found",
-                          500: "Internal Server Error"}
-        self._connect.sendall("HTTP/1.0 " + str(status) + " " + status_message[status] + "\r\n")
-        self._connect.sendall(content_type + "\r\n")
-        for header in extra_headers:
-            self._connect.sendall(header + "\r\n")
-        self._connect.sendall("X-Powered-By: MicroPyServer\r\n")
-        self._connect.sendall("\r\n")
-        self._connect.sendall(response)
+        self._connect.sendall(data.encode())
 
     def find_route(self, request):
         """ Find route """
@@ -102,23 +96,47 @@ class MicroPyServer(object):
                     print(method, path, route["path"])
                     return route
 
-    def not_found(self):
-        """ Not found action """
-        self.send("404", status=404)
-
-    def internal_error(self, error):
-        """ Catch error action """
-        output = io.StringIO()
-        sys.print_exception(error, output)
-        str_error = output.getvalue()
-        output.close()
-        self.send("Error: " + str_error, status=500)
+    def get_request(self, buffer_length=4096):
+        """ Return request body """
+        return str(self._connect.recv(buffer_length), "utf8")
 
     def on_request(self, handler):
         """ Set request handler """
         self._on_request_handler = handler
 
-    def _get_request(self):
-        """ Return request body """
-        return str(self._connect.recv(4096), "utf8")
+    def on_not_found(self, handler):
+        """ Set not found handler """
+        self._on_not_found_handler = handler
+
+    def on_error(self, handler):
+        """ Set error handler """
+        self._on_error_handler = handler
+
+    def _route_not_found(self, request):
+        """ Route not found handler """
+        if self._on_not_found_handler:
+            self._on_not_found_handler(request)
+        else:
+            """ Default not found handler """
+            self.send("HTTP/1.0 404 Not Found\r\n")
+            self.send("Content-Type: text/plain\r\n\r\n")
+            self.send("Not found")
+
+    def _internal_error(self, error):
+        """ Internal error handler """
+        if self._on_error_handler:
+            self._on_error_handler(error)
+        else:
+            """ Default internal error handler """
+            if "print_exception" in dir(sys):
+                output = io.StringIO()
+                sys.print_exception(error, output)
+                str_error = output.getvalue()
+                output.close()
+            else:
+                str_error = str(error)
+            self.send("HTTP/1.0 500 Internal Server Error\r\n")
+            self.send("Content-Type: text/plain\r\n\r\n")
+            self.send("Error: " + str_error)
+            print(str_error)
 

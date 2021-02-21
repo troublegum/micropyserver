@@ -7,7 +7,7 @@
 ## Install
 
 Download a code and unpack it into your project folder.
-Use Thonny IDE or other IDE to load your code in ESP8266/ESP32 board.
+Use Thonny IDE or other IDE for upload your code in ESP8266/ESP32 board.
 
 ## Quick start
 
@@ -57,8 +57,8 @@ import json
 def return_json(request):
     ''' request handler '''
     json_str = json.dumps({"param_one": 1, "param_two": 2})
-    server.send("HTTP/1.0 200 OK\r\n");
-    server.send("Content-Type: application/json\r\n\r\n");
+    server.send("HTTP/1.0 200 OK\r\n")
+    server.send("Content-Type: application/json\r\n\r\n")
     server.send(json_str)
 
 server = MicroPyServer()
@@ -78,7 +78,7 @@ def show_index(request):
     
 def on_request_handler(request, address):
     if str(address[0]) != '127.0.0.1':
-        server.send("HTTP/1.0 403\r\n\r\n");
+        server.send("HTTP/1.0 403\r\n\r\n")
         server.send('ACCESS DENIED!')
         return False        
     return True
@@ -93,7 +93,7 @@ server.on_request(on_request_handler)
 server.start()
 ``` 
 
-### Turn ON / OFF a LED example
+### Turn ON / OFF a led example
 
 You can remote control a led via internet.
 
@@ -119,7 +119,7 @@ wlan.active(True)
 
 while not wlan.isconnected():
     wlan.connect(wlan_id, wlan_pass)
-print("Connected... IP: " + wlan.ifconfig()[0]);    
+print("Connected... IP: " + wlan.ifconfig()[0])    
     
 def do_on(request):
     ''' on request handler '''
@@ -157,8 +157,6 @@ Add new route - srv.add_route(path, handler, method="GET")
 Send response to client - srv.send(response)
 
 Return current request - srv.get_request()
-
-### Event handlers
 
 Set handler on every request - server.on_request(handler)
 

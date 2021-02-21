@@ -145,6 +145,27 @@ server.add_route("/off", do_off)
 server.start()    
 ```    
 
+### Use utils for create response
+```
+from micropyserver import MicroPyServer
+import utils
+
+def hello_world(request):
+    ''' request handler '''
+    utils.send_response(server, "HELLO WORLD!")
+
+def not_found(request):
+    ''' request handler '''
+    utils.send_response(server, "404", 404)
+
+server = MicroPyServer()
+''' add routes '''
+server.add_route("/", hello_world)
+server.add_route("/404", not_found)
+''' start server '''
+server.start()
+```
+
 
 ## MicroPyServer methods
 
@@ -163,3 +184,7 @@ Set handler on every request - server.on_request(handler)
 Set handler on 404 - server.on_not_found(handler)
 
 Set handler on server error - server.on_error(handler)
+
+## Utils methods
+
+Send response to client - utils.send_response(server, response, http_code=200, content_type="text/html", extend_headers=None)

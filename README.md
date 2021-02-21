@@ -93,9 +93,9 @@ server.on_request(on_request_handler)
 server.start()
 ``` 
 
-### Turn ON / OFF a led example
+### Turn ON / OFF a LED example
 
-You can remote control a led via internet.
+You can remote control a LED via internet.
 
 ![schema](https://habrastorage.org/webt/jb/xu/aj/jbxuaj0nr8fnqllbq27p_vfx3bw.png)
 

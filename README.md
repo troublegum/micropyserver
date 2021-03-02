@@ -7,7 +7,7 @@
 ## Install
 
 Download a code and unpack it into your project folder.
-Use Thonny IDE or other IDE to load your code in ESP8266/ESP32 board.
+Use Thonny IDE or other IDE for upload your code in ESP8266/ESP32 board.
 
 ## Quick start
 
@@ -57,8 +57,8 @@ import json
 def return_json(request):
     ''' request handler '''
     json_str = json.dumps({"param_one": 1, "param_two": 2})
-    server.send("HTTP/1.0 200 OK\r\n");
-    server.send("Content-Type: application/json\r\n\r\n");
+    server.send("HTTP/1.0 200 OK\r\n")
+    server.send("Content-Type: application/json\r\n\r\n")
     server.send(json_str)
 
 server = MicroPyServer()
@@ -78,7 +78,7 @@ def show_index(request):
     
 def on_request_handler(request, address):
     if str(address[0]) != '127.0.0.1':
-        server.send("HTTP/1.0 403\r\n\r\n");
+        server.send("HTTP/1.0 403\r\n\r\n")
         server.send('ACCESS DENIED!')
         return False        
     return True
@@ -95,7 +95,7 @@ server.start()
 
 ### Turn ON / OFF a LED example
 
-You can remote control a led via internet.
+You can remote control a LED via internet.
 
 ![schema](https://habrastorage.org/webt/jb/xu/aj/jbxuaj0nr8fnqllbq27p_vfx3bw.png)
 
@@ -119,7 +119,7 @@ wlan.active(True)
 
 while not wlan.isconnected():
     wlan.connect(wlan_id, wlan_pass)
-print("Connected... IP: " + wlan.ifconfig()[0]);    
+print("Connected... IP: " + wlan.ifconfig()[0])    
     
 def do_on(request):
     ''' on request handler '''
@@ -145,6 +145,27 @@ server.add_route("/off", do_off)
 server.start()    
 ```    
 
+### Use utils for create response
+```
+from micropyserver import MicroPyServer
+import utils
+
+def hello_world(request):
+    ''' request handler '''
+    utils.send_response(server, "HELLO WORLD!")
+
+def not_found(request):
+    ''' request handler '''
+    utils.send_response(server, "404", 404)
+
+server = MicroPyServer()
+''' add routes '''
+server.add_route("/", hello_world)
+server.add_route("/404", not_found)
+''' start server '''
+server.start()
+```
+
 
 ## MicroPyServer methods
 
@@ -158,10 +179,12 @@ Send response to client - srv.send(response)
 
 Return current request - srv.get_request()
 
-### Event handlers
-
 Set handler on every request - server.on_request(handler)
 
 Set handler on 404 - server.on_not_found(handler)
 
 Set handler on server error - server.on_error(handler)
+
+## Utils methods
+
+Send response to client - utils.send_response(server, response, http_code=200, content_type="text/html", extend_headers=None)

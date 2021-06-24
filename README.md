@@ -11,11 +11,30 @@ Use Thonny IDE or other IDE for upload your code in ESP8266/ESP32 board.
 
 ## Quick start
 
+### Typical Wi-Fi connection code for ESP board
+```
+import network
+
+wlan_id = "your wi-fi"
+wlan_pass = "your password"
+
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+
+while not wlan.isconnected():
+    wlan.connect(wlan_id, wlan_pass)
+print("Connected... IP: " + wlan.ifconfig()[0])  
+```
+
 
 ### Hello world example
 
+Type in browser http://IP_ADDRESS_ESP/ and you will see "HELLO WORLD" text.
+
 ```
 from micropyserver import MicroPyServer
+
+''' there should be a wi-fi connection code here '''
 
 def hello_world(request):
     ''' request handler '''
@@ -29,8 +48,13 @@ server.start()
 ```
 
 ### Add some routes
+
+Type in browser http://IP_ADDRESS_ESP/ or http://IP_ADDRESS_ESP/another_action and your will text "THIS IS INDEX PAGE!" or "THIS IS ANOTHER ACTION!".
+
 ```
 from micropyserver import MicroPyServer
+
+''' there should be a wi-fi connection code here '''
 
 def show_index(request):
     ''' main request handler '''
@@ -50,9 +74,13 @@ server.start()
 
 ### Send JSON response example
 
+Type in browser http://IP_ADDRESS_ESP/ and you will see JSON response.
+
 ```
 from micropyserver import MicroPyServer
 import json
+
+''' there should be a wi-fi connection code here '''
 
 def return_json(request):
     ''' request handler '''
@@ -69,17 +97,22 @@ server.start()
 ```
 
 ### Access denied example
+
+Type in browser http://IP_ADDRESS_ESP/ and you will see "THIS IS INDEX PAGE!" text or "ACCESS DENIED!" if your IP not equal "127.0.0.1".
+
 ```
 from micropyserver import MicroPyServer
+
+''' there should be a wi-fi connection code here '''
 
 def show_index(request):
     ''' main request handler '''
     server.send("THIS IS INDEX PAGE!")
     
 def on_request_handler(request, address):
-    if str(address[0]) != '127.0.0.1':
+    if str(address[0]) != "127.0.0.1":
         server.send("HTTP/1.0 403\r\n\r\n")
-        server.send('ACCESS DENIED!')
+        server.send("ACCESS DENIED!")
         return False        
     return True
 
@@ -95,7 +128,7 @@ server.start()
 
 ### Turn ON / OFF a LED example
 
-You can remote control a LED via internet.
+You can remote control a LED via internet. Use your browser for on/off LED. Type in browser http://IP_ADDRESS_ESP/on or http://IP_ADDRESS_ESP/off.
 
 ![schema](https://habrastorage.org/webt/jb/xu/aj/jbxuaj0nr8fnqllbq27p_vfx3bw.png)
 
@@ -149,6 +182,8 @@ server.start()
 ```
 from micropyserver import MicroPyServer
 import utils
+
+''' there should be a wi-fi connection code here '''
 
 def hello_world(request):
     ''' request handler '''

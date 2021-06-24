@@ -49,7 +49,7 @@ server.start()
 
 ### Add some routes
 
-Type in browser http://IP_ADDRESS_ESP/ or http://IP_ADDRESS_ESP/another_action and your will text "THIS IS INDEX PAGE!" or "THIS IS ANOTHER ACTION!".
+Type in browser http://IP_ADDRESS_ESP/ or http://IP_ADDRESS_ESP/another_action and your will see text "THIS IS INDEX PAGE!" or "THIS IS ANOTHER ACTION!".
 
 ```
 from micropyserver import MicroPyServer

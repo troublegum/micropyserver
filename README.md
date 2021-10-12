@@ -223,3 +223,5 @@ Set handler on server error - server.on_error(handler)
 ## Utils methods
 
 Send response to client - utils.send_response(server, response, http_code=200, content_type="text/html", extend_headers=None)
+
+Get HTTP request method - utils.get_request_method(request)

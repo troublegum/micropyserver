@@ -26,6 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+import re
+
 """ HTTP response codes """
 HTTP_CODES = {
     100: 'Continue',
@@ -98,3 +100,9 @@ def send_response(server, response, http_code=200, content_type="text/html", ext
             server.send(header + "\r\n")
     server.send("\r\n")
     server.send(response)
+
+
+def get_request_method(request):
+    """ return http request method """
+    lines = request.split("\r\n")
+    return re.search("^([A-Z]+)", lines[0]).group(1)

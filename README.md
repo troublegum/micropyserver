@@ -251,12 +251,12 @@ Send response to client - utils.send_response(server, response, http_code=200, c
 
 Get HTTP request method (example of return value: POST) - utils.get_request_method(request)
 
-Return http request query string (example of return value: param_one=one&param_two=two) - utils.get_request_query_string(request)
+Return HTTP request query string (example of return value: param_one=one&param_two=two) - utils.get_request_query_string(request)
 
 Return params from query string (example of return value: {"param_one": "one", "param_two": "two"}) - utils.parse_query_string(query_string)
 
-Return http request query params (example of return value: {"param_one": "one", "param_two": "two"}) - utils.get_request_query_params(request)
+Return HTTP request query params (example of return value: {"param_one": "one", "param_two": "two"}) - utils.get_request_query_params(request)
 
 Return params from POST request (example of return value: {"param_one": "one", "param_two": "two"}) - utils.get_request_post_params(request)
 
-Unquote string - unquote(string) 
+Unquote string - utils.unquote(string) 

@@ -106,3 +106,75 @@ def get_request_method(request):
     """ return http request method """
     lines = request.split("\r\n")
     return re.search("^([A-Z]+)", lines[0]).group(1)
+
+
+def get_request_query_string(request):
+    """ return http request query string """
+    lines = request.split("\r\n")
+    match = re.search("\\?(.+)\\s", lines[0])
+    if match is None:
+        return ""
+    else:
+        return match.group(1)
+
+
+def parse_query_string(query_string):
+    """ return params from query string """
+    if len(query_string) == 0:
+        return {}
+    query_params_string = query_string.split("&")
+    query_params = {}
+    for param_string in query_params_string:
+        param = param_string.split("=")
+        key = param[0]
+        if len(param) == 1:
+            value = ""
+        else:
+            value = param[1]
+        query_params[key] = value
+    return query_params
+
+
+def get_request_query_params(request):
+    """ return http request query params """
+    query_string = get_request_query_string(request)
+    return parse_query_string(query_string)
+
+
+def get_request_post_params(request):
+    """ return params from POST request """
+    request_method = get_request_method(request)
+    if request_method != "POST":
+        return None
+    match = re.search("\r\n\r\n(.+)", request)
+    if match is None:
+        return {}
+    query_string = match.group(1)
+    return parse_query_string(query_string)
+
+
+def unquote(string):
+    """ unquote string """
+    if not string:
+        return ""
+
+    if isinstance(string, str):
+        string = string.encode("utf-8")
+
+    bits = string.split(b"%")
+    if len(bits) == 1:
+        return string.decode("utf-8")
+
+    res = bytearray(bits[0])
+    append = res.append
+    extend = res.extend
+
+    for item in bits[1:]:
+        try:
+            append(int(item[:2], 16))
+            extend(item[2:])
+        except KeyError:
+            append(b"%")
+            extend(item)
+
+    return bytes(res).decode("utf-8")

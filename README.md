@@ -201,6 +201,30 @@ server.add_route("/404", not_found)
 server.start()
 ```
 
+### Parse HTTP request. Get query params from request.
+Type in browser http://IP_ADDRESS_ESP/?param_one=one&param_two=two
+
+```
+''' Example of HTTP request: GET /?param_one=one&param_two=two HTTP/1.1\r\nHost: localhost\r\n\r\n '''
+from micropyserver import MicroPyServer
+import utils
+
+''' there should be a wi-fi connection code here '''
+
+def show_params(request):
+    ''' request handler '''
+	params = utils.get_request_query_params(request)	
+	print(params)
+	''' will return {"param_one": "one", "param_two": "two"} '''
+
+server = MicroPyServer()
+''' add route '''
+server.add_route("/", show_params)
+''' start server '''
+server.start()
+
+```
+
 
 ## MicroPyServer methods
 
@@ -220,8 +244,19 @@ Set handler on 404 - server.on_not_found(handler)
 
 Set handler on server error - server.on_error(handler)
 
+
 ## Utils methods
 
 Send response to client - utils.send_response(server, response, http_code=200, content_type="text/html", extend_headers=None)
 
-Get HTTP request method - utils.get_request_method(request)
+Get HTTP request method (example of return value: POST) - utils.get_request_method(request)
+
+Return http request query string (example of return value: param_one=one&param_two=two) - utils.get_request_query_string(request)
+
+Return params from query string (example of return value: {"param_one": "one", "param_two": "two"}) - utils.parse_query_string(query_string)
+
+Return http request query params (example of return value: {"param_one": "one", "param_two": "two"}) - utils.get_request_query_params(request)
+
+Return params from POST request (example of return value: {"param_one": "one", "param_two": "two"}) - utils.get_request_post_params(request)
+
+Unquote string - unquote(string) 

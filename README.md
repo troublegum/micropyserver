@@ -7,7 +7,7 @@
 ## Install
 
 Download a code and unpack it into your project folder.
-Use Thonny IDE or other IDE for upload your code in ESP8266/ESP32 board.
+Use [Thonny IDE](https://thonny.org/) or other IDE for upload your code in ESP8266/ESP32 board.
 
 ## Quick start
 

@@ -42,6 +42,7 @@ class MicroPyServer(object):
         self._on_request_handler = None
         self._on_not_found_handler = None
         self._on_error_handler = None
+        self.sock = None
 
     def start(self):
         """ Start server """

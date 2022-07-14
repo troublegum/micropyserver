@@ -68,7 +68,13 @@ class MicroPyServer(object):
                 self._internal_error(e)
             finally:
                 self._connect.close()
-
+                
+    def stop(self):
+        """ Stop the Server """
+        self._connect.close()
+        self.sock.close()
+        self.sock = None
+                
     def add_route(self, path, handler, method="GET"):
         """ Add new route  """
         self._routes.append(

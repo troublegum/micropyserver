@@ -232,6 +232,8 @@ Constructor - srv = MicroPyServer(host="0.0.0.0", port=80)
 
 Start server - srv.start() 
 
+Stop server - srv.stop()
+
 Add new route - srv.add_route(path, handler, method="GET")
 
 Send response to client - srv.send(response)
@@ -249,14 +251,14 @@ Set handler on server error - server.on_error(handler)
 
 Send response to client - utils.send_response(server, response, http_code=200, content_type="text/html", extend_headers=None)
 
-Get HTTP request method (example of return value: POST) - utils.get_request_method(request)
+Return HTTP request method (example of return value: POST) - utils.get_request_method(request)
 
-Return HTTP request query string (example of return value: param_one=one&param_two=two) - utils.get_request_query_string(request)
+Return http request query string (example of return value: param_one=one&param_two=two) - utils.get_request_query_string(request)
 
 Return params from query string (example of return value: {"param_one": "one", "param_two": "two"}) - utils.parse_query_string(query_string)
 
-Return HTTP request query params (example of return value: {"param_one": "one", "param_two": "two"}) - utils.get_request_query_params(request)
+Return http request query params (example of return value: {"param_one": "one", "param_two": "two"}) - utils.get_request_query_params(request)
 
 Return params from POST request (example of return value: {"param_one": "one", "param_two": "two"}) - utils.get_request_post_params(request)
 
-Unquote string - utils.unquote(string) 
+Unquote string - unquote(string) 

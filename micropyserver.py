@@ -42,16 +42,20 @@ class MicroPyServer(object):
         self._on_request_handler = None
         self._on_not_found_handler = None
         self._on_error_handler = None
+        self._sock = None
 
     def start(self):
         """ Start server """
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.bind((self._host, self._port))
-        sock.listen(1)
+        self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self._sock.bind((self._host, self._port))
+        self._sock.listen(1)
+        print("Server start")
         while True:
+            if self._sock is None:
+                break
             try:
-                self._connect, address = sock.accept()
+                self._connect, address = self._sock.accept()
                 request = self.get_request()
                 if len(request) == 0:
                     self._connect.close()
@@ -68,6 +72,13 @@ class MicroPyServer(object):
                 self._internal_error(e)
             finally:
                 self._connect.close()
+
+    def stop(self):
+        """ Stop the server """
+        self._connect.close()
+        self._sock.close()
+        self._sock = None
+        print("Server stop")
 
     def add_route(self, path, handler, method="GET"):
         """ Add new route  """
@@ -139,4 +150,5 @@ class MicroPyServer(object):
             self.send("Content-Type: text/plain\r\n\r\n")
             self.send("Error: " + str_error)
             print(str_error)
+
 

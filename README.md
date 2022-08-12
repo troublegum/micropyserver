@@ -7,7 +7,7 @@
 ## Install
 
 Download a code and unpack it into your project folder.
-Use Thonny IDE or other IDE for upload your code in ESP8266/ESP32 board.
+Use [Thonny IDE](https://thonny.org/) or other IDE for upload your code in ESP8266/ESP32 board.
 
 ## Quick start
 
@@ -232,6 +232,8 @@ Constructor - srv = MicroPyServer(host="0.0.0.0", port=80)
 
 Start server - srv.start() 
 
+Stop server - srv.stop()
+
 Add new route - srv.add_route(path, handler, method="GET")
 
 Send response to client - srv.send(response)
@@ -249,7 +251,7 @@ Set handler on server error - server.on_error(handler)
 
 Send response to client - utils.send_response(server, response, http_code=200, content_type="text/html", extend_headers=None)
 
-Get HTTP request method (example of return value: POST) - utils.get_request_method(request)
+Return HTTP request method (example of return value: POST) - utils.get_request_method(request)
 
 Return http request query string (example of return value: param_one=one&param_two=two) - utils.get_request_query_string(request)
 

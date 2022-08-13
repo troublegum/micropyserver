@@ -225,6 +225,37 @@ server.start()
 
 ```
 
+### Custom 404 page
+1. Upload HTML 404 page file in ESP8266 with name 404.html.
+2. Add not found handler in your code.
+
+404 HTML page:
+```
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>404 Error Page</title>
+</head>
+<body>
+    <h1>404 Page not found</h1>
+</body>
+</html>
+```
+
+Code:
+```
+def not_found_handler(request):    
+    server.send("HTTP/1.0 404\r\n")
+    server.send("Content type: text/html\r\n\r\n")
+    file = open("404.html")
+    for line in file:
+        server.send(line)
+    file.close()  
+
+server = MicroPyServer()
+server.on_not_found(not_found_handler)
+```
+
 
 ## MicroPyServer methods
 

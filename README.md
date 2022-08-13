@@ -280,16 +280,16 @@ Set handler on server error - server.on_error(handler)
 
 ## Utils methods
 
-Send response to client - utils.send_response(server, response, http_code=200, content_type="text/html", extend_headers=None)
+**send_response(server, response, http_code=200, content_type="text/html", extend_headers=None)** - send response to client
 
-Return HTTP request method (example of return value: POST) - utils.get_request_method(request)
+**get_request_method(request)** - return HTTP request method (example of return value: POST)
 
-Return query string from HTTP request (example of return value: param_one=one&param_two=two) - utils.get_request_query_string(request)
+**get_request_query_string(request)** - return query string from HTTP request (example of return value: param_one=one&param_two=two)
 
-Return params from query string (example of return value: {"param_one": "one", "param_two": "two"}) - utils.parse_query_string(query_string)
+**parse_query_string(query_string)** - return params from query string (example of return value: {"param_one": "one", "param_two": "two"})
 
-Return query params from HTTP request (example of return value: {"param_one": "one", "param_two": "two"}) - utils.get_request_query_params(request)
+**get_request_query_params(request)** - return query params from HTTP request (example of return value: {"param_one": "one", "param_two": "two"})
 
-Return params from POST request (example of return value: {"param_one": "one", "param_two": "two"}) - utils.get_request_post_params(request)
+**get_request_post_params(request)** - return params from POST request (example of return value: {"param_one": "one", "param_two": "two"})
 
-Unquote string - unquote(string) 
+**unquote(string)** - unquote string

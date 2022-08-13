@@ -259,23 +259,23 @@ server.on_not_found(not_found_handler)
 
 ## MicroPyServer methods
 
-Constructor - srv = MicroPyServer(host="0.0.0.0", port=80)
+**MicroPyServer(host="0.0.0.0", port=80)** - constructor
 
-Start server - srv.start() 
+**start()** - start server
 
-Stop server - srv.stop()
+**stop()** - stop server
 
-Add new route - srv.add_route(path, handler, method="GET")
+**add_route(path, handler, method="GET")** - add new route
 
-Send response to client - srv.send(response)
+**send(response)** - send response to client
 
-Return current request - srv.get_request()
+**get_request()** - return current request
 
-Set handler on every request - server.on_request(handler)
+**on_request(handler)** - set handler on every request
 
-Set handler on 404 - server.on_not_found(handler)
+**on_not_found(handler)** - set handler on 404
 
-Set handler on server error - server.on_error(handler)
+**on_error(handler)** - set handler on server error
 
 
 ## Utils methods

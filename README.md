@@ -13,19 +13,35 @@ Use [Thonny IDE](https://thonny.org/) or other IDE for upload your code in ESP82
 
 ### Typical Wi-Fi connection code for ESP board
 ```
+import esp
 import network
+import ubinascii
 
 wlan_id = "your wi-fi"
 wlan_pass = "your password"
 
+mac = ubinascii.hexlify(network.WLAN().config('mac'),':').decode()
+print("MAC: " + mac)
+
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 
-while not wlan.isconnected():
-    wlan.connect(wlan_id, wlan_pass)
+if wlan.status() is not network.STAT_GOT_IP:
+    while not wlan.isconnected():
+        wlan.connect(wlan_id, wlan_pass)
 print("Connected... IP: " + wlan.ifconfig()[0])  
 ```
 
+### Typical modules that you should import
+```
+import esp
+import network
+import machine
+import os
+import ubinascii <--- if used typical connection code from example
+import utils <--- if user utils
+from micropyserver import MicroPyServer
+```
 
 ### Hello world example
 
@@ -133,26 +149,10 @@ You can remote control a LED via internet. Use your browser for on/off LED. Type
 ![schema](https://habrastorage.org/webt/jb/xu/aj/jbxuaj0nr8fnqllbq27p_vfx3bw.png)
 
 ```
-import esp
-import network
-import machine
-import ubinascii
 from micropyserver import MicroPyServer
+import machine
 
-wlan_id = "your wi-fi"
-wlan_pass = "your password"
-
-print("Start...")
-
-mac = ubinascii.hexlify(network.WLAN().config('mac'),':').decode()
-print("MAC: " + mac)
-
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
-
-while not wlan.isconnected():
-    wlan.connect(wlan_id, wlan_pass)
-print("Connected... IP: " + wlan.ifconfig()[0])    
+''' there should be a wi-fi connection code here '''   
     
 def do_on(request):
     ''' on request handler '''
@@ -244,6 +244,10 @@ server.start()
 
 Code:
 ```
+from micropyserver import MicroPyServer
+
+''' there should be a wi-fi connection code here '''
+
 def not_found_handler(request):    
     server.send("HTTP/1.0 404\r\n")
     server.send("Content type: text/html\r\n\r\n")

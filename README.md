@@ -15,6 +15,7 @@ Use [Thonny IDE](https://thonny.org/) or other IDE for upload your code in ESP82
 ```
 import esp
 import network
+import time
 import ubinascii
 
 wlan_id = "your wi-fi"
@@ -25,10 +26,10 @@ print("MAC: " + mac)
 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
-
-if wlan.status() is not network.STAT_GOT_IP:
-    while not wlan.isconnected():
-        wlan.connect(wlan_id, wlan_pass)
+while wlan.status() is network.STAT_CONNECTING:
+    time.sleep(1)
+while not wlan.isconnected():
+    wlan.connect(wlan_id, wlan_pass)
 print("Connected... IP: " + wlan.ifconfig()[0])  
 ```
 
@@ -38,6 +39,7 @@ import esp
 import network
 import machine
 import os
+import time <--- if used typical connection code from example
 import ubinascii <--- if used typical connection code from example
 import utils <--- if user utils
 from micropyserver import MicroPyServer

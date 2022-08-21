@@ -178,3 +178,34 @@ def unquote(string):
             extend(item)
 
     return bytes(res).decode("utf-8")
+
+
+def get_cookies(request):
+    """ return cookies """
+    lines = request.split("\r\n")
+    cookie_string = None
+    for line in lines:
+        if line.find(":") is not -1:
+            header, value = line.split(':', 1)
+            if header.lower() == "cookie":
+                cookie_string = value
+    cookies = {}
+    if cookie_string:
+        for cookie in cookie_string.split('; '):
+            name, value = cookie.strip().split('=', 1)
+            cookies[name] = value
+
+    return cookies
+
+
+def create_cookie(name, value, path="/", domain=None, expires=None):
+    """ create cookie header """
+    cookie = "Set-Cookie: " + str(name) + "=" + str(value)
+    if path:
+        cookie = cookie + "; path=" + path
+    if domain:
+        cookie = cookie + "; domain=" + domain
+    if expires:
+        cookie = cookie + "; expires=" + expires
+
+    return cookie

@@ -131,7 +131,7 @@ def parse_query_string(query_string):
             value = ""
         else:
             value = param[1]
-        query_params[key] = value
+        query_params[key] = unquote(value)
     return query_params
 
 

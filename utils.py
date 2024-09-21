@@ -94,7 +94,7 @@ HTTP_CODES = {
 def send_response(server, response, http_code=200, content_type="text/html", extend_headers=None):
     """ send response """
     server.send("HTTP/1.0 " + str(http_code) + " " + HTTP_CODES.get(http_code) + "\r\n")
-    server.send("Content type:" + content_type + "\r\n")
+    server.send("Content-Type: " + content_type + "\r\n")
     if extend_headers is not None:
         for header in extend_headers:
             server.send(header + "\r\n")

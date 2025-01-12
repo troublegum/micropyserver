@@ -94,7 +94,7 @@ HTTP_CODES = {
 def send_response(server, response, http_code=200, content_type="text/html", extend_headers=None):
     """ send response """
     server.send("HTTP/1.0 " + str(http_code) + " " + HTTP_CODES.get(http_code) + "\r\n")
-    server.send("Content type:" + content_type + "\r\n")
+    server.send("Content-Type: " + content_type + "\r\n")
     if extend_headers is not None:
         for header in extend_headers:
             server.send(header + "\r\n")
@@ -131,7 +131,7 @@ def parse_query_string(query_string):
             value = ""
         else:
             value = param[1]
-        query_params[key] = value
+        query_params[key] = unquote(value)
     return query_params
 
 
@@ -178,3 +178,34 @@ def unquote(string):
             extend(item)
 
     return bytes(res).decode("utf-8")
+
+
+def get_cookies(request):
+    """ return cookies """
+    lines = request.split("\r\n")
+    cookie_string = None
+    for line in lines:
+        if line.find(":") is not -1:
+            header, value = line.split(':', 1)
+            if header.lower() == "cookie":
+                cookie_string = value
+    cookies = {}
+    if cookie_string:
+        for cookie in cookie_string.split('; '):
+            name, value = cookie.strip().split('=', 1)
+            cookies[name] = value
+
+    return cookies
+
+
+def create_cookie(name, value, path="/", domain=None, expires=None):
+    """ create cookie header """
+    cookie = "Set-Cookie: " + str(name) + "=" + str(value)
+    if path:
+        cookie = cookie + "; path=" + path
+    if domain:
+        cookie = cookie + "; domain=" + domain
+    if expires:
+        cookie = cookie + "; expires=" + expires
+
+    return cookie

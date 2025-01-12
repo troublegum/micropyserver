@@ -13,19 +13,37 @@ Use [Thonny IDE](https://thonny.org/) or other IDE for upload your code in ESP82
 
 ### Typical Wi-Fi connection code for ESP board
 ```
+import esp
 import network
+import time
+import ubinascii
 
 wlan_id = "your wi-fi"
 wlan_pass = "your password"
 
+mac = ubinascii.hexlify(network.WLAN().config('mac'),':').decode()
+print("MAC: " + mac)
+
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
-
+while wlan.status() is network.STAT_CONNECTING:
+    time.sleep(1)
 while not wlan.isconnected():
     wlan.connect(wlan_id, wlan_pass)
 print("Connected... IP: " + wlan.ifconfig()[0])  
 ```
 
+### Typical modules that you should import
+```
+import esp
+import network
+import machine
+import os
+import time <--- if used typical connection code from example
+import ubinascii <--- if used typical connection code from example
+import utils <--- if user utils
+from micropyserver import MicroPyServer
+```
 
 ### Hello world example
 
@@ -133,26 +151,10 @@ You can remote control a LED via internet. Use your browser for on/off LED. Type
 ![schema](https://habrastorage.org/webt/jb/xu/aj/jbxuaj0nr8fnqllbq27p_vfx3bw.png)
 
 ```
-import esp
-import network
-import machine
-import ubinascii
 from micropyserver import MicroPyServer
+import machine
 
-wlan_id = "your wi-fi"
-wlan_pass = "your password"
-
-print("Start...")
-
-mac = ubinascii.hexlify(network.WLAN().config('mac'),':').decode()
-print("MAC: " + mac)
-
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
-
-while not wlan.isconnected():
-    wlan.connect(wlan_id, wlan_pass)
-print("Connected... IP: " + wlan.ifconfig()[0])    
+''' there should be a wi-fi connection code here '''   
     
 def do_on(request):
     ''' on request handler '''
@@ -225,40 +227,75 @@ server.start()
 
 ```
 
+### Custom 404 page
+1. Upload HTML 404 page file in ESP8266 with name 404.html.
+2. Add not found handler in your code.
+
+404 HTML page:
+```
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>404 Error Page</title>
+</head>
+<body>
+    <h1>404 Page not found</h1>
+</body>
+</html>
+```
+
+Code:
+```
+from micropyserver import MicroPyServer
+
+''' there should be a wi-fi connection code here '''
+
+def not_found_handler(request):    
+    server.send("HTTP/1.0 404\r\n")
+    server.send("Content type: text/html\r\n\r\n")
+    file = open("404.html")
+    for line in file:
+        server.send(line)
+    file.close()  
+
+server = MicroPyServer()
+server.on_not_found(not_found_handler)
+```
+
 
 ## MicroPyServer methods
 
-Constructor - srv = MicroPyServer(host="0.0.0.0", port=80)
+**MicroPyServer(host="0.0.0.0", port=80)** - constructor
 
-Start server - srv.start() 
+**start()** - start server
 
-Stop server - srv.stop()
+**stop()** - stop server
 
-Add new route - srv.add_route(path, handler, method="GET")
+**add_route(path, handler, method="GET")** - add new route
 
-Send response to client - srv.send(response)
+**send(response)** - send response to client
 
-Return current request - srv.get_request()
+**get_request()** - return current request
 
-Set handler on every request - server.on_request(handler)
+**on_request(handler)** - set handler on every request
 
-Set handler on 404 - server.on_not_found(handler)
+**on_not_found(handler)** - set handler on 404
 
-Set handler on server error - server.on_error(handler)
+**on_error(handler)** - set handler on server error
 
 
 ## Utils methods
 
-Send response to client - utils.send_response(server, response, http_code=200, content_type="text/html", extend_headers=None)
+**send_response(server, response, http_code=200, content_type="text/html", extend_headers=None)** - send response to client
 
-Return HTTP request method (example of return value: POST) - utils.get_request_method(request)
+**get_request_method(request)** - return HTTP request method (example of return value: POST)
 
-Return http request query string (example of return value: param_one=one&param_two=two) - utils.get_request_query_string(request)
+**get_request_query_string(request)** - return query string from HTTP request (example of return value: param_one=one&param_two=two)
 
-Return params from query string (example of return value: {"param_one": "one", "param_two": "two"}) - utils.parse_query_string(query_string)
+**parse_query_string(query_string)** - return params from query string (example of return value: {"param_one": "one", "param_two": "two"})
 
-Return http request query params (example of return value: {"param_one": "one", "param_two": "two"}) - utils.get_request_query_params(request)
+**get_request_query_params(request)** - return query params from HTTP request (example of return value: {"param_one": "one", "param_two": "two"})
 
-Return params from POST request (example of return value: {"param_one": "one", "param_two": "two"}) - utils.get_request_post_params(request)
+**get_request_post_params(request)** - return params from POST request (example of return value: {"param_one": "one", "param_two": "two"})
 
-Unquote string - unquote(string) 
+**unquote(string)** - unquote string
